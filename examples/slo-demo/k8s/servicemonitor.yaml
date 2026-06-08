@@ -5,8 +5,8 @@ metadata:
   namespace: slo-demo
   labels:
     # This label must match the label selected by your Prometheus installation.
-    # For kube-prometheus-stack, it is usually 'release: kube-prometheus-stack'.
-    release: kube-prometheus-stack
+    # For kube-prometheus-stack, it is usually 'release: <helm-release-name>'.
+    release: monitoring
 spec:
   selector:
     matchLabels:

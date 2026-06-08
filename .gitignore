@@ -9,3 +9,11 @@ build/
 .env
 .venv/
 venv/
+kubeconfig
+kind-config.yaml
+.helm/
+.DS_Store
+kubeconfig
+kind-config.yaml
+.helm/
+.DS_Store

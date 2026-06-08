@@ -32,8 +32,10 @@ Measuring service levels is fundamental to Site Reliability Engineering (SRE). I
     * [5. Deploy the ServiceMonitor](#5-deploy-the-servicemonitor)
     * [6. Verify the Prometheus target](#6-verify-the-prometheus-target)
     * [7. Deploy the load generator](#7-deploy-the-load-generator)
-    * [8. Import the Grafana dashboard](#8-import-the-grafana-dashboard)
+    * [8. Access Grafana](#8-access-grafana)
+    * [9. Import the Grafana dashboard](#9-import-the-grafana-dashboard)
 * [Interpreting the Dashboard](#interpreting-the-dashboard)
+* [Dashboard Preview](#dashboard-preview)
 * [Verification Commands](#verification-commands)
 * [Troubleshooting](#troubleshooting)
 * [Cleanup](#cleanup)
@@ -87,15 +89,17 @@ The ServiceMonitor tells Prometheus to scrape metrics from our application.
 kubectl apply -f k8s/servicemonitor.yaml
 ```
 
-*Note: Ensure the `release: kube-prometheus-stack` label in `k8s/servicemonitor.yaml` matches your Prometheus installation.*
+*Note: The `release` label in `k8s/servicemonitor.yaml` must match the Helm release name of your `kube-prometheus-stack` (e.g., `monitoring`). You can find this name by running `helm list -A`.*
 
 ### 6. Verify the Prometheus target
 
 Check the Prometheus UI (Targets page) to ensure `slo-demo` is discovered and being scraped successfully. You can port-forward Prometheus to access it:
 
 ```bash
-kubectl port-forward -n monitoring svc/prometheus-operated 9090
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090
 ```
+
+Visit: [http://localhost:9090/targets](http://localhost:9090/targets)
 
 ### 7. Deploy the load generator
 
@@ -105,7 +109,29 @@ The load generator produces a deterministic pattern of traffic: ~99.7% success r
 kubectl apply -f k8s/load-generator.yaml
 ```
 
-### 8. Import the Grafana dashboard
+### 8. Access Grafana
+
+Port-forward the Grafana service to access it locally:
+
+```bash
+kubectl port-forward -n monitoring service/monitoring-grafana 3000:80
+```
+
+Access via: [http://localhost:3000](http://localhost:3000)
+Default username: `admin`
+
+Retrieve the admin password:
+
+```bash
+kubectl get secret \
+  --namespace monitoring \
+  monitoring-grafana \
+  -o jsonpath='{.data.admin-password}' |
+  base64 --decode
+echo
+```
+
+### 9. Import the Grafana dashboard
 
 1. Open your Grafana UI.
 2. Go to **Dashboards** -> **Import**.
@@ -123,17 +149,29 @@ The dashboard consists of six key panels:
 5. **HTTP 5xx Error Rate:** A focused view of server-side errors.
 6. **P95 Request Latency:** The 95th percentile latency, highlighting the "slow" requests.
 
+## Dashboard Preview
+
+The dashboard below shows the measured availability, SLO and SLA thresholds, error-budget consumption, traffic, errors and latency produced by the demo workload.
+
+![SLO Demo Grafana Dashboard](images/slo-demo-grafana-dashboard.png)
+
 ## Verification Commands
 
 ```bash
+# Check Helm release name
+helm list -n monitoring
+
+# Check ServiceMonitor labels
+kubectl get servicemonitor -n slo-demo slo-demo --show-labels
+
+# Check Prometheus configuration and selectors
+kubectl get prometheus -n monitoring -o yaml
+
 # Check Pods
 kubectl get pods -n slo-demo
 
 # Check Service
 kubectl get service -n slo-demo
-
-# Check ServiceMonitor
-kubectl get servicemonitor -n slo-demo
 
 # Access the application locally
 kubectl port-forward -n slo-demo service/slo-demo 8080:80
@@ -148,9 +186,11 @@ curl http://localhost:8080/metrics
 
 * **Image not found:** Ensure you ran `kind load docker-image`. Kind cannot pull images from your local Docker daemon directly without this step.
 * **No metrics in Grafana:** 
-    * Verify the ServiceMonitor is selected by Prometheus (check the `release` label).
+    * Verify the ServiceMonitor is selected by Prometheus. The `release` label in the ServiceMonitor must match the label selected by the Prometheus resource.
+    * Use `kubectl get prometheus -n monitoring -o yaml` to check the `serviceMonitorSelector`.
     * Ensure the application Pods are running and `/metrics` is reachable.
     * Check if the `namespace` variable in Grafana is set to `slo-demo`.
+    * Optional: To allow Prometheus to discover all ServiceMonitors regardless of labels, set `prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false` in your Helm values.
 * **Zero availability:** If there is no traffic, the availability calculation may show `N/A`. Ensure the load generator is running.
 
 ## Cleanup

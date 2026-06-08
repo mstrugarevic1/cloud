@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-generator
+  namespace: slo-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: load-generator
+  template:
+    metadata:
+      labels:
+        app: load-generator
+    spec:
+      containers:
+      - name: curl
+        image: curlimages/curl:8.7.1
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          while true; do
+            RAND=$(( ( $RANDOM % 1000 ) + 1 ))
+            if [ $RAND -le 3 ]; then
+              # 0.3% Failures (HTTP 500)
+              curl -s -o /dev/null http://slo-demo.slo-demo.svc.cluster.local/fail
+            elif [ $RAND -le 53 ]; then
+              # 5% Slow requests (HTTP 200)
+              curl -s -o /dev/null http://slo-demo.slo-demo.svc.cluster.local/slow
+            else
+              # ~94.7% Normal requests (HTTP 200)
+              curl -s -o /dev/null http://slo-demo.slo-demo.svc.cluster.local/
+            fi
+            sleep 0.05
+          done

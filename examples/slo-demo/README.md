@@ -51,11 +51,13 @@ Measuring service levels is fundamental to Site Reliability Engineering (SRE). I
 
 ### 1. Create or select the Kind cluster
 
-If you don't have a cluster yet:
+If you don't have a cluster yet, you can create an empty one with Kind:
 
 ```bash
 kind create cluster --name slo-demo
 ```
+
+*Note: `kind create cluster` creates a basic Kubernetes cluster. Prometheus Operator and Grafana must be installed separately (e.g., via `kube-prometheus-stack`) before you can proceed with the ServiceMonitor and dashboard steps. If you already have a monitored cluster, you can skip this step.*
 
 ### 2. Build the local image
 

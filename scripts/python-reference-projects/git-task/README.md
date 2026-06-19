@@ -47,7 +47,7 @@ Copy the script to a directory on your `PATH` and make it executable:
 
 ```bash
 mkdir -p ~/bin
-cp scripts/git-task ~/bin/git-task
+cp git-task.py ~/bin/git-task
 chmod +x ~/bin/git-task
 ```
 

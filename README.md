@@ -24,8 +24,7 @@ This repository includes a small Jira-aware Git helper for starting work on tick
 
 See:
 
-- `docs/git-task-helper.md`
-- `scripts/git-task`
+- `scripts/python-reference-projects/git-task/`
 
 ## Related Repositories
 

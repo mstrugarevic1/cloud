@@ -47,7 +47,7 @@ try:
 except ImportError:
     print(
         "Error: missing Python package 'GitPython'. Install dependencies with: "
-        "python3 -m pip install -r requirements.txt",
+        "python3 -m pip install GitPython jira",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -232,7 +232,7 @@ def load_jira_client() -> Any:
     except ImportError:
         die(
             "Missing Python package 'jira'. Install dependencies with: "
-            "python3 -m pip install -r requirements.txt"
+            "python3 -m pip install GitPython jira"
         )
 
     try:

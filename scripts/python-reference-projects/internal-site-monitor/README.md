@@ -15,14 +15,10 @@ python3 internal_site_monitor.py serve
 ```
 
 Open `http://127.0.0.1:8000`. The server binds only to localhost by default.
+While running, `serve` checks immediately and repeats every
+`check_interval_seconds` configured in `config.json`.
 
-Run checks every minute with cron (use absolute paths in a real crontab):
-
-```cron
-* * * * * cd /path/to/internal-site-monitor && python3 internal_site_monitor.py check
-```
-
-The most recent 100 samples per site are retained in `data/history.json`.
+History is retained for `history_retention_days` (seven days by default).
 Chart.js is loaded from jsDelivr when the dashboard opens, so the browser needs
 internet access. For an isolated internal network, download Chart.js into
 `web/` and change the generated script URL to the local file.

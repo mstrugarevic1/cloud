@@ -18,20 +18,11 @@ This repository serves as a collection of infrastructure-as-code (IaC), automati
 - **[CI/CD Standards](./docs/ci-cd-standards.md)**: Best practices for building robust delivery pipelines.
 - **[Cloud Migration Risk Register](./docs/cloud-migration-risk-register.md)**: Framework for assessing migration risks.
 
-## Git Task Helper
-
-This repository includes a small Jira-aware Git helper for starting work on ticket-based branches.
-
-See:
-
-- `scripts/python-reference-projects/backup-utility/`
-- `scripts/python-reference-projects/git-task/`
-- `scripts/python-reference-projects/internal-site-monitor/`
-- `scripts/python-reference-projects/log-analyzer/`
-
 ## Related Repositories
 
 For Kubernetes-specific implementation examples, please see the **[k8s-examples](../k8s-examples/README.md)** repository.
+
+For Python automation tools and reference projects, see **[python](https://github.com/strugi032/python)**.
 
 ## Usage
 

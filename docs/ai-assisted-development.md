@@ -275,6 +275,207 @@ This generic example illustrates the shape of an MCP configuration. Real configu
 > [!TIP]
 > The safest workflow is: understand first, plan second, change third, review last.
 
+## AI-Assisted Feature Development Workflow
+
+![AI-assisted feature development workflow](images/ai-assisted-feature-development-flow.png)
+
+### 1. Feature Request
+
+A new feature request is received.
+
+Inputs may include:
+- Jira ticket
+- product request
+- internal requirement
+- bug report
+- customer request
+
+Goal:
+
+Understand what problem is being solved before discussing implementation details.
+
+Output:
+- feature description
+- acceptance criteria
+- known constraints
+
+### 2. Repository Review
+
+Before writing any code, analyze the existing system.
+
+Questions:
+- Which components are affected?
+- Which services are involved?
+- Are there existing implementations of similar functionality?
+- What dependencies exist?
+- What areas are considered high-risk?
+
+AI should first explain the current architecture before proposing changes.
+
+Output:
+- repository summary
+- impacted files
+- potential risks
+
+### 3. Feature Plan
+
+Create an implementation plan before generating code.
+
+The plan should answer:
+- What files will change?
+- Why are they changing?
+- What alternative approaches exist?
+- What can break?
+- How can the feature be rolled back?
+
+Output:
+- implementation plan
+- testing strategy
+- rollback strategy
+
+No code should be written at this stage.
+
+### 4. Human Approval
+
+The engineer reviews the implementation plan.
+
+Purpose:
+
+Prevent AI from making architectural decisions without review.
+
+Questions:
+- Does the approach make sense?
+- Is the scope reasonable?
+- Is the implementation too complex?
+- Does it violate existing architecture?
+
+Output:
+- approved plan
+- revised plan
+- rejected plan
+
+### 5. AI Implementation
+
+AI generates code based on the approved plan.
+
+Rules:
+- modify only required files
+- avoid unrelated refactoring
+- explain every change
+- explain why each file was modified
+
+Output:
+- code changes
+- implementation summary
+
+### 6. Local Testing
+
+Verify functionality before opening a PR.
+
+Checks:
+- feature works as expected
+- no obvious regressions
+- unit tests pass
+- integration tests pass
+- logs look healthy
+
+Output:
+- test results
+- known issues
+
+### 7. AI Pull Request Review
+
+Use a separate AI review pass.
+
+Prompt example:
+
+```text
+Review this pull request as a Staff Engineer.
+```
+
+Check:
+- correctness
+- maintainability
+- security risks
+- duplicated logic
+- production risks
+- rollback concerns
+- missing tests
+
+Purpose:
+
+Force a second opinion before merge.
+
+Output:
+- review findings
+- improvement recommendations
+
+### 8. Human Review
+
+Final human verification.
+
+Questions:
+- Do I understand the code?
+- Can I explain the implementation?
+- Can I explain rollback steps?
+- Am I comfortable supporting this in production?
+
+Rule:
+
+If the engineer cannot explain the implementation, the PR is not ready.
+
+Output:
+- approve
+- request changes
+
+### 9. Merge and Deploy
+
+Deploy through the normal delivery pipeline.
+
+Checks:
+- deployment succeeded
+- application health checks pass
+- monitoring shows no regressions
+- rollback procedure validated
+
+Output:
+- production deployment
+
+### 10. Update Documentation
+
+Capture project knowledge.
+
+Update:
+- changelog
+- feature notes
+- ADRs
+- operational documentation
+
+Purpose:
+
+Avoid losing context between AI sessions.
+
+Output:
+- documented implementation
+
+### 11. Next Feature Context
+
+Before starting the next feature, review:
+- changelog
+- feature notes
+- ADRs
+- previous PR reviews
+
+Purpose:
+
+Provide historical context to AI.
+
+This prevents future sessions from re-discovering information that already exists.
+
+Output:
+- project context package
+- informed implementation decisions
+
 ## Good Prompt Examples
 
 ```text
